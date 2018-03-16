@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:paper_onboarding/UI/page_reveal.dart';
 import 'package:paper_onboarding/pages/page.dart';
-import 'package:paper_onboarding/pages/pages.dart';
+import 'package:paper_onboarding/domain/pages.dart';
 
 void main() => runApp(
     new MyApp()
@@ -41,7 +42,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       body: new Stack(
         children: <Widget>[
-          new Page(pages[2], 0.0)
+          new Page(pages[2], 1.0),
+          new PageReveal(
+            child: new Page(pages[1], 1.0),
+            revealPercent: 0.0,
+          ),          
         ],
       )
     );
