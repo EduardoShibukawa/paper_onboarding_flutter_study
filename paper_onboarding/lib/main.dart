@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:paper_onboarding/UI/page_indicator.dart';
 import 'package:paper_onboarding/UI/page_reveal.dart';
 import 'package:paper_onboarding/pages/page.dart';
 import 'package:paper_onboarding/domain/pages.dart';
 
-void main() => runApp(
-    new MyApp()
-  );
+void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -30,7 +29,6 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-
   @override
   _MyHomePageState createState() => new _MyHomePageState();
 }
@@ -38,17 +36,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
-      body: new Stack(
-        children: <Widget>[
-          new Page(pages[2], 1.0),
-          new PageReveal(
-            child: new Page(pages[1], 1.0),
-            revealPercent: 0.0,
-          ),          
-        ],
-      )
-    );
+        body: new Stack(
+      children: <Widget>[
+        new Page(pages[2], 1.0),
+        new PageReveal(
+          child: new Page(pages[1], 1.0),
+          revealPercent: 1.0,
+        ),
+        new PageIndicator(
+          viewModel: new PageIndicatorViewModel(
+            pages, 
+            1, 
+            SlideDirection.none,
+            0.0
+          ),
+        )                
+      ],
+    ));
   }
 }
