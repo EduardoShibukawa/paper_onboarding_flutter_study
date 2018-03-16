@@ -48,8 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
           viewModel: new PageIndicatorViewModel(
             pages, 
             1, 
-            SlideDirection.none,
-            0.0
+            SlideDirection.leftToRight,
+            1.0
           ),
         )                
       ],

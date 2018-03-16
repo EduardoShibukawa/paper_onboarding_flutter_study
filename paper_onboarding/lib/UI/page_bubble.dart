@@ -17,12 +17,12 @@ class PageBubble extends StatelessWidget {
           decoration: new BoxDecoration(
             shape: BoxShape.circle,             
             color: viewModel.isHollow
-              ? Colors.transparent
+              ? const Color(0X88FFFFFF).withAlpha((0X88 * viewModel.activatePercent).round())
               : const Color(0X88FFFFFF),
             border: new Border.all(
               width: 3.0, 
               color: viewModel.isHollow
-              ? const Color(0X88FFFFFF)
+              ? const Color(0X88FFFFFF).withAlpha((0X88 * (1.0 - viewModel.activatePercent)).round())
               : Colors.transparent,
             ),
           ),
