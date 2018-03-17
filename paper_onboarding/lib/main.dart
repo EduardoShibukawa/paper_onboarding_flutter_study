@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:paper_onboarding/UI/page_dragger.dart';
 import 'package:paper_onboarding/UI/page_indicator.dart';
 import 'package:paper_onboarding/UI/page_reveal.dart';
 import 'package:paper_onboarding/pages/page.dart';
@@ -34,24 +37,69 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  StreamController<SlideUpdate> slideUpdateStream;
+
+  SlideDirection slideDirection = SlideDirection.none;
+  double slidePercent = 0.0;
+  int activateIndex = 0;
+  int nextPageIndex = 1;  
+
+  _MyHomePageState(){
+    this.slideUpdateStream = new StreamController<SlideUpdate>();
+    this.slideUpdateStream.stream.listen(
+      (SlideUpdate event) {
+        setState(() {                    
+          if (event.updateType == UpdateType.dragging) {
+            if (slideDirection == SlideDirection.leftToRight) {
+              nextPageIndex = activateIndex -1;
+            }
+            else if (slideDirection == SlideDirection.rightToLeft) {
+              nextPageIndex = activateIndex + 1;
+            } else {
+              nextPageIndex = activateIndex;
+            }                        
+          }
+          else if (event.updateType == UpdateType.doneDragging) {
+            if (this.slidePercent > 0.5) {
+              activateIndex = this.slideDirection == SlideDirection.leftToRight
+                ? activateIndex - 1
+                : activateIndex + 1;
+            }
+          }
+
+          slideDirection = event.direction;
+          slidePercent = event.slidePercent;
+        });
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         body: new Stack(
       children: <Widget>[
-        new Page(pages[2], 1.0),
+        new Page(pages[activateIndex], 1.0),
         new PageReveal(
-          child: new Page(pages[1], 1.0),
-          revealPercent: 1.0,
+          child: new Page(
+              pages[nextPageIndex], 
+              this.slidePercent
+          ),
+          revealPercent: this.slidePercent,
         ),
         new PageIndicator(
           viewModel: new PageIndicatorViewModel(
             pages, 
-            1, 
-            SlideDirection.leftToRight,
-            1.0
+            this.activateIndex, 
+            this.slideDirection,
+            this.slidePercent
           ),
-        )                
+        ),
+        new PageDragger(
+          canDragLeftToRight: activateIndex > 0,
+          canDragRightToLeft: activateIndex < pages.length - 1,
+          slideUpdateStream: this.slideUpdateStream,
+        )
       ],
     ));
   }
