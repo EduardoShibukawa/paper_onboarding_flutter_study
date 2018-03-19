@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:paper_onboarding/UI/page_indicator.dart';
@@ -78,7 +79,7 @@ class _PageDraggerState extends State<PageDragger> {
   }
 }
 
-class AnimationPageDragger {
+class AnimatedPageDragger {
 
   static const PERCENT_PER_MILLISECOND = 0.005;
 
@@ -87,13 +88,14 @@ class AnimationPageDragger {
 
   AnimationController completeAnimationController;
 
-  AnimationPageDragger({
+  AnimatedPageDragger({
       this.slideDirection, 
       this.transitionGoal,
       slidePercent,
       StreamController<SlideUpdate> slideUpdateStream,
       TickerProvider vsync,      
-  }) {
+  }) {    
+    final startSlidePercent = slidePercent;
     var endSlidePercent;
     var duration;
 
@@ -115,23 +117,45 @@ class AnimationPageDragger {
       vsync: vsync
     )
     ..addListener(
-      () {
+      () {      
+        slidePercent = lerpDouble(
+          startSlidePercent,
+          endSlidePercent,
+          completeAnimationController.value
+        );
+
         slideUpdateStream.add(
           new SlideUpdate(
-            UpdateType.dragging,
+            UpdateType.animating,
             slideDirection, 
             slidePercent
           )
-        );
-      }
+        );}
       )
     ..addStatusListener(
       (AnimationStatus status) {
-
+        if (status == AnimationStatus.completed){
+          slideUpdateStream.add(
+            new SlideUpdate(
+              UpdateType.doneAnimating, 
+              slideDirection, 
+              endSlidePercent
+            )
+          );
+        }
       }
     );
   }  
-}
+
+  run() {
+    completeAnimationController.forward(from: 0.0);
+
+  }
+
+  dispose() {
+    completeAnimationController.dispose();    
+  }
+} 
 
 enum TransitionGoal {
   open,
@@ -140,7 +164,9 @@ enum TransitionGoal {
 
 enum UpdateType{
   dragging,
-  doneDragging
+  doneDragging,
+  animating,
+  doneAnimating
 }
 
 class SlideUpdate {

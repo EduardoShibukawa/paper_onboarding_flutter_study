@@ -36,8 +36,9 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   StreamController<SlideUpdate> slideUpdateStream;
+  AnimatedPageDragger animatedPageDragger;
 
   SlideDirection slideDirection = SlideDirection.none;
   double slidePercent = 0.0;
@@ -52,23 +53,40 @@ class _MyHomePageState extends State<MyHomePage> {
           if (event.updateType == UpdateType.dragging) {
             if (slideDirection == SlideDirection.leftToRight) {
               nextPageIndex = activateIndex -1;
-            }
-            else if (slideDirection == SlideDirection.rightToLeft) {
+            } else if (slideDirection == SlideDirection.rightToLeft) {
               nextPageIndex = activateIndex + 1;
             } else {
               nextPageIndex = activateIndex;
             }                        
-          }
-          else if (event.updateType == UpdateType.doneDragging) {
+          } else if (event.updateType == UpdateType.doneDragging) {
             if (this.slidePercent > 0.5) {
-              activateIndex = this.slideDirection == SlideDirection.leftToRight
-                ? activateIndex - 1
-                : activateIndex + 1;
+              animatedPageDragger = new AnimatedPageDragger(
+                slideDirection: this.slideDirection,
+                transitionGoal: TransitionGoal.open,
+                slidePercent: this.slidePercent,
+                slideUpdateStream: this.slideUpdateStream,
+                vsync: this,
+              );
+            } else {
+              animatedPageDragger = new AnimatedPageDragger(
+                slideDirection: this.slideDirection,
+                transitionGoal: TransitionGoal.close,
+                slidePercent: this.slidePercent,
+                slideUpdateStream: this.slideUpdateStream,
+                vsync: this,
+              );
+              nextPageIndex = activateIndex;
             }
-          }
-
-          slideDirection = event.direction;
-          slidePercent = event.slidePercent;
+            animatedPageDragger.run();                          
+          } else if (event.updateType == UpdateType.animating) {
+            slideDirection = event.direction;
+            slidePercent = event.slidePercent;            
+          } else if (event.updateType == UpdateType.doneAnimating) {
+            activateIndex = nextPageIndex;
+            animatedPageDragger.dispose();
+            slideDirection = SlideDirection.none;
+            slidePercent = 0.0;                        
+          }          
         });
       }
     );
