@@ -30,7 +30,7 @@ class PageBubble extends StatelessWidget {
             ),
             child: new Opacity(
               opacity: viewModel.activatePercent,
-              child: new Image.network(
+              child: new Image.asset(
                   viewModel.iconAssetPath,
                   color: viewModel.color,
                 )

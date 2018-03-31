@@ -21,7 +21,7 @@ class Page extends StatelessWidget {
                     0.0, 50.0 * (1 - this.percentVisibible), 0.0),
                 child: new Padding(
                   padding: const EdgeInsets.only(bottom: 25.0),
-                  child: new Image.network(viewModel.heroAssetPath,
+                  child: new Image.asset(viewModel.heroAssetPath,
                       width: 200.0, height: 200.0),
                 ),
               ),
