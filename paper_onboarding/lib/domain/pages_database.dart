@@ -13,7 +13,7 @@ final pages = [
     const Color(0XFF65B0B4),
     'assets/c_clef.png', 
     'Alto - C Clef', 
-    "'Used for middle frequecies insruments nowadays normally used only for viola.",
+    'Used for middle frequecies instruments nowadays normally used only for viola.',
     'assets/c_clef.png'
   ),
   new PageViewModel(

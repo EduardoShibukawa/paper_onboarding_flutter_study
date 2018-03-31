@@ -13,7 +13,7 @@ class Pages extends StatefulWidget {
   Pages({this.viewModel});
 
   @override
-  _PagesState createState() => new _PagesState();
+  _PagesState createState() => new _PagesState();  
 }
 
 class _PagesState extends State<Pages> with TickerProviderStateMixin {
@@ -36,46 +36,14 @@ class _PagesState extends State<Pages> with TickerProviderStateMixin {
     this.slideUpdateStream = new StreamController<SlideUpdate>();
     this.slideUpdateStream.stream.listen((SlideUpdate event) {
         setState(() {                                        
-          if (event.updateType == UpdateType.dragging) {
-            slideDirection = event.direction;
-            slidePercent = event.slidePercent;            
-
-            if (slideDirection == SlideDirection.leftToRight) {
-              nextPageIndex = activateIndex -1;
-            } else if (slideDirection == SlideDirection.rightToLeft) {
-              nextPageIndex = activateIndex + 1;
-            } else {
-              nextPageIndex = activateIndex;
-            }                        
-          } else if (event.updateType == UpdateType.doneDragging) {
-            if (this.slidePercent > 0.5) {
-              animatedPageDragger = new AnimatedPageDragger(
-                slideDirection: this.slideDirection,
-                transitionGoal: TransitionGoal.open,
-                slidePercent: this.slidePercent,
-                slideUpdateStream: this.slideUpdateStream,
-                vsync: this,
-              );
-            } else {
-              animatedPageDragger = new AnimatedPageDragger(
-                slideDirection: this.slideDirection,
-                transitionGoal: TransitionGoal.close,
-                slidePercent: this.slidePercent,
-                slideUpdateStream: this.slideUpdateStream,
-                vsync: this,
-              );
-
-              nextPageIndex = activateIndex;
-            }
-            animatedPageDragger.run();                          
-          } else if (event.updateType == UpdateType.animating) {
-            slideDirection = event.direction;
-            slidePercent = event.slidePercent;            
-          } else if (event.updateType == UpdateType.doneAnimating) {            
-            activateIndex = nextPageIndex;            
-            slideDirection = SlideDirection.none;
-            slidePercent = 0.0;                        
-            animatedPageDragger.dispose();
+          if (this._isDragging(event)) {
+            this.updateDragging(event);
+          } else if (this._hasDoneDragging(event)) {
+            this._updateDoneDragging();
+          } else if (this._isAnimatting(event)) {            
+            this._updateAnimatting(event);
+          } else if (this._hasDoneAnimatting(event)) {            
+            this._updateDoneAnimatting();
           }          
         });
       }
@@ -111,8 +79,71 @@ class _PagesState extends State<Pages> with TickerProviderStateMixin {
       ],
     ));
   }
-}
 
+  bool _isDragging(SlideUpdate event) {
+    return event.updateType == UpdateType.dragging;
+  }
+
+  bool _hasDoneDragging(SlideUpdate event){
+    return event.updateType == UpdateType.doneDragging;
+  }
+
+  bool _isAnimatting(SlideUpdate event) {
+    return event.updateType == UpdateType.animating;
+  }
+
+  bool _hasDoneAnimatting(SlideUpdate event) {
+    return event.updateType == UpdateType.doneAnimating;
+  }
+  void updateDragging(SlideUpdate event){    
+    this.slidePercent = event.slidePercent;            
+    this.slideDirection = event.direction;
+    
+    if (slideDirection == SlideDirection.leftToRight) {
+      this.nextPageIndex = this.activateIndex -1;
+    } else if (slideDirection == SlideDirection.rightToLeft) {
+      this.nextPageIndex = this.activateIndex + 1;
+    } else {
+      this.nextPageIndex = this.activateIndex;
+    }                        
+  }
+
+  void _updateDoneDragging() {
+    if (this.slidePercent > 0.5) {
+      this.animatedPageDragger = new AnimatedPageDragger(
+        slideDirection: this.slideDirection,
+        transitionGoal: TransitionGoal.open,
+        slidePercent: this.slidePercent,
+        slideUpdateStream: this.slideUpdateStream,
+        vsync: this,
+      );
+    } else {
+      this.animatedPageDragger = new AnimatedPageDragger(
+        slideDirection: this.slideDirection,
+        transitionGoal: TransitionGoal.close,
+        slidePercent: this.slidePercent,
+        slideUpdateStream: this.slideUpdateStream,
+        vsync: this,
+      );
+
+      this.nextPageIndex = this.activateIndex;
+    }
+
+    this.animatedPageDragger.run();                              
+  }
+
+  void _updateAnimatting(SlideUpdate event) {
+    this.slideDirection = event.direction;
+    this.slidePercent = event.slidePercent;
+  }
+
+  void _updateDoneAnimatting() {
+    this.activateIndex = this.nextPageIndex;            
+    this.slideDirection = SlideDirection.none;
+    this.slidePercent = 0.0;                        
+    this.animatedPageDragger.dispose();    
+  }
+}
 class PagesViewModel {
   final List<PageViewModel> pages;
 
