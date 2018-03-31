@@ -46,6 +46,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int activateIndex = 0;
   int nextPageIndex = 0;  
 
+  @override
+  void dispose(){
+    slideUpdateStream.close();
+    super.dispose();
+  }
+
   _MyHomePageState(){
     this.slideUpdateStream = new StreamController<SlideUpdate>();
     this.slideUpdateStream.stream.listen((SlideUpdate event) {

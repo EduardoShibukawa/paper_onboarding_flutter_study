@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -14,8 +14,8 @@ class PageBubble extends StatelessWidget {
       height: 65.0,
       child: new Center(
         child: new Container(
-            width: lerpDouble(25.0, 45.0, viewModel.activatePercent),
-            height: lerpDouble(25.0, 45.0, viewModel.activatePercent),
+            width: ui.lerpDouble(25.0, 45.0, viewModel.activatePercent),
+            height: ui.lerpDouble(25.0, 45.0, viewModel.activatePercent),
             decoration: new BoxDecoration(
               shape: BoxShape.circle,             
               color: viewModel.isHollow

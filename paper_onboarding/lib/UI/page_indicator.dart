@@ -36,7 +36,7 @@ class PageIndicator extends StatelessWidget {
       ));
     }
 
-    final BUBBLE_WIDTH = 55.0;
+    const BUBBLE_WIDTH = 55.0;
     final baseTranslation = (viewModel.pages.length * BUBBLE_WIDTH / 2) - (BUBBLE_WIDTH / 2);
     var translation = baseTranslation - (viewModel.activateIndex * BUBBLE_WIDTH);
     switch (viewModel.slideDirection) {
