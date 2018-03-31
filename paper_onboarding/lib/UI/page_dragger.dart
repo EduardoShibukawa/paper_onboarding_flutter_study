@@ -53,9 +53,7 @@ class _PageDraggerState extends State<PageDragger> {
           slideDirection, 
           slidePercent
         )
-    );
-
-    print("Dragging $slideDirection at $slidePercent%");
+    );    
   }
 
   onDragEnd(DragEndDetails details) {

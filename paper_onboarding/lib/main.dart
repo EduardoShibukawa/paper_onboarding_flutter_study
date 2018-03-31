@@ -37,20 +37,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  
   StreamController<SlideUpdate> slideUpdateStream;
   AnimatedPageDragger animatedPageDragger;
 
   SlideDirection slideDirection = SlideDirection.none;
   double slidePercent = 0.0;
   int activateIndex = 0;
-  int nextPageIndex = 1;  
+  int nextPageIndex = 0;  
 
   _MyHomePageState(){
     this.slideUpdateStream = new StreamController<SlideUpdate>();
-    this.slideUpdateStream.stream.listen(
-      (SlideUpdate event) {
-        setState(() {                    
+    this.slideUpdateStream.stream.listen((SlideUpdate event) {
+        setState(() {                                        
           if (event.updateType == UpdateType.dragging) {
+            slideDirection = event.direction;
+            slidePercent = event.slidePercent;            
+
             if (slideDirection == SlideDirection.leftToRight) {
               nextPageIndex = activateIndex -1;
             } else if (slideDirection == SlideDirection.rightToLeft) {
@@ -75,17 +78,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 slideUpdateStream: this.slideUpdateStream,
                 vsync: this,
               );
+
               nextPageIndex = activateIndex;
             }
             animatedPageDragger.run();                          
           } else if (event.updateType == UpdateType.animating) {
             slideDirection = event.direction;
             slidePercent = event.slidePercent;            
-          } else if (event.updateType == UpdateType.doneAnimating) {
-            activateIndex = nextPageIndex;
-            animatedPageDragger.dispose();
+          } else if (event.updateType == UpdateType.doneAnimating) {            
+            activateIndex = nextPageIndex;            
             slideDirection = SlideDirection.none;
             slidePercent = 0.0;                        
+            animatedPageDragger.dispose();
           }          
         });
       }
