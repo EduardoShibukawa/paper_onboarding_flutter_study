@@ -95,7 +95,8 @@ class _PagesState extends State<Pages> with TickerProviderStateMixin {
   bool _hasDoneAnimatting(SlideUpdate event) {
     return event.updateType == UpdateType.doneAnimating;
   }
-  void updateDragging(SlideUpdate event){    
+
+  updateDragging(SlideUpdate event){    
     this.slidePercent = event.slidePercent;            
     this.slideDirection = event.direction;
     
@@ -108,7 +109,7 @@ class _PagesState extends State<Pages> with TickerProviderStateMixin {
     }                        
   }
 
-  void _updateDoneDragging() {
+  _updateDoneDragging() {
     if (this.slidePercent > 0.5) {
       this.animatedPageDragger = new AnimatedPageDragger(
         slideDirection: this.slideDirection,
@@ -132,18 +133,19 @@ class _PagesState extends State<Pages> with TickerProviderStateMixin {
     this.animatedPageDragger.run();                              
   }
 
-  void _updateAnimatting(SlideUpdate event) {
+  _updateAnimatting(SlideUpdate event) {
     this.slideDirection = event.direction;
     this.slidePercent = event.slidePercent;
   }
 
-  void _updateDoneAnimatting() {
+  _updateDoneAnimatting() {
     this.activateIndex = this.nextPageIndex;            
     this.slideDirection = SlideDirection.none;
     this.slidePercent = 0.0;                        
     this.animatedPageDragger.dispose();    
   }
 }
+
 class PagesViewModel {
   final List<PageViewModel> pages;
 

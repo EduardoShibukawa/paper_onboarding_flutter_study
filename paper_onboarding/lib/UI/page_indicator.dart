@@ -7,6 +7,10 @@ class PageIndicator extends StatelessWidget {
 
   PageIndicator({this.viewModel});
 
+  bool isActivePage(int index){
+    return index == this.viewModel.activateIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<PageBubble> bubbles = [];
@@ -14,8 +18,11 @@ class PageIndicator extends StatelessWidget {
     for (var i = 0; i < viewModel.pages.length; i++) {
       final page = viewModel.pages[i];
 
+      /*
+      terminar de refatorar aqui
+      */
       var percentActive;
-      if (i == viewModel.activateIndex) {
+      if (this.isActivePage(i)) {
         percentActive = 1.0 - viewModel.slidePercent;
       } else if (i < viewModel.activateIndex &&
           viewModel.slideDirection == SlideDirection.leftToRight) {
@@ -23,8 +30,7 @@ class PageIndicator extends StatelessWidget {
       } else if (i > viewModel.activateIndex &&
           viewModel.slideDirection == SlideDirection.rightToLeft) {
         percentActive = viewModel.slidePercent;
-      } else
-        percentActive = 0.0;
+      } else percentActive = 0.0;
 
       bool isHollow = i > viewModel.activateIndex ||
           (i == viewModel.activateIndex &&

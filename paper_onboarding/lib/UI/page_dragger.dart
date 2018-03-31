@@ -78,11 +78,10 @@ class _PageDraggerState extends State<PageDragger> {
 }
 
 class AnimatedPageDragger {
+  static const double PERCENT_PER_MILLISECOND = 0.005;
 
-  static const PERCENT_PER_MILLISECOND = 0.005;
-
-  final slideDirection;
-  final transitionGoal;
+  final SlideDirection slideDirection;
+  final TransitionGoal transitionGoal;
 
   AnimationController completeAnimationController;
 
@@ -93,9 +92,9 @@ class AnimatedPageDragger {
       StreamController<SlideUpdate> slideUpdateStream,
       TickerProvider vsync,      
   }) {    
-    final startSlidePercent = slidePercent;
-    var endSlidePercent;
-    var duration;
+    final double startSlidePercent = slidePercent;
+    double endSlidePercent;
+    Duration duration;
 
     if (transitionGoal == TransitionGoal.open) {
       endSlidePercent = 1.0;
@@ -128,8 +127,9 @@ class AnimatedPageDragger {
             slideDirection, 
             slidePercent
           )
-        );}
-      )
+        );
+      }
+    )
     ..addStatusListener(
       (AnimationStatus status) {
         if (status == AnimationStatus.completed){
