@@ -10,7 +10,7 @@ class Page extends StatelessWidget {
   Widget build(BuildContext build) {
     return new Container(
         color: viewModel.color,
-        width: double.INFINITY,
+        width: double.infinity,
         child: new Opacity(
           opacity: this.percentVisibible,
           child: new Column(
